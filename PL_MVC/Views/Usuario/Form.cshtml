@@ -1,0 +1,34 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Resgistrar un nuevo Usuario</h2>
+@using (Html.BeginForm("Form", "MostrarUsuarios", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.LabelFor(model => model.UserName)
+    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Nombre)
+    @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control" })
+    @Html.LabelFor(model => model.ApellidoPaterno)
+    @Html.TextBoxFor(model => model.ApellidoPaterno, new { @class = "form-control" })
+    @Html.LabelFor(model => model.ApellidoMaterno)
+    @Html.TextBoxFor(model => model.ApellidoMaterno, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Email)
+    @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Password)
+    @Html.TextBoxFor(model => model.Password, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Sexo)
+    @Html.TextBoxFor(model => model.Sexo, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Telefono)
+    @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Celular)
+    @Html.TextBoxFor(model => model.Celular, new { @class = "form-control" })
+    @Html.LabelFor(model => model.FechaNacimiento)
+    @Html.TextBoxFor(model => model.FechaNacimiento, new { @class = "form-control" })
+    @Html.LabelFor(model => model.CURP)
+    @Html.TextBoxFor(model => model.CURP, new { @class = "form-control" })
+    @Html.LabelFor(model => model.Rol.IdRol)
+    @Html.TextBoxFor(model => model.Rol.IdRol, new { @class = "form-control" })
+  
+}

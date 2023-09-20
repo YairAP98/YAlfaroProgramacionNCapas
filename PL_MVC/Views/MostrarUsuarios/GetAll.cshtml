@@ -1,0 +1,168 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<hr />
+<div class="text-center">
+    <h2>Usuarios Registrados</h2>
+</div>
+<hr />
+<br />
+@using (Html.BeginForm("GetAll", "MostrarUsuarios", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row">
+
+
+        <div class="col-auto ms-auto">
+            <a href="@Url.Action("Form", "MostrarUsuarios")" class="btn btn-success">Agregar</a>
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @placeholder = "Nombre" })
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.ApellidoPaterno, new { @class = "form-control", @placeholder = "Apellido Paterno" })
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-dark" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+        </div>
+
+
+
+    </div>
+}
+<br />
+
+
+
+    <table class="table table-responsive-sm table-hover" id="myTable">
+        <thead>
+            <tr>
+                <th>Editar</th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Email</th>
+                @*<th>Password</th>
+                    <th>Sexo</th>
+                    <th>Telefono</th>
+                    <th>Celular</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>CURP</th>*@
+                <th>Rol</th>
+                <th>Direccion</th>
+                <th>Estatus</th>
+                <th>Eliminar</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ML.Usuario usuario in Model.Usuarios)
+            {
+                <tr>
+                    <td><a class="btn btn-warning" href="@Url.Action("Form", "MostrarUsuarios", new {IdUsuario = usuario.IdUsuario })"><i class="fa-solid fa-pen" style="color: #fff;"></i></a></td>
+                    @*<td>@usuario.IdUsuario</td>*@
+                    @if (usuario.Imagen == "" || usuario.Imagen == null)
+                    {
+                        <td>
+                            <img src="https://cdn-icons-png.flaticon.com/512/6596/6596121.png" width="50" height="50" />
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <img src="data:image/*;base64,@usuario.Imagen" width="50" height="50" />
+
+                        </td>
+
+                    }
+
+
+
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.ApellidoPaterno</td>
+                    <td>@usuario.ApellidoMaterno</td>
+                    <td>@usuario.Email</td>
+                    @*<td>@usuario.Password</td>
+                        <td>@usuario.Sexo</td>
+                        <td>@usuario.Telefono</td>
+                        <td>@usuario.Celular</td>
+                        <td>@usuario.FechaNacimiento</td>
+                        <td>@usuario.CURP</td>*@
+                    @if (usuario.Rol.IdRol == 1)
+                    {
+                        <td style="color:brown">@usuario.Rol.NombreRol</td>
+                    }
+                    else
+                    {
+                        <td style="color:forestgreen">@usuario.Rol.NombreRol</td>
+
+                    }
+                    <td>
+                        @usuario.Direccion.Calle,
+                        @usuario.Direccion.NumeroInterior,
+                        @usuario.Direccion.NumeroExterior,
+                        @usuario.Direccion.Colonia.Nombre,
+                        @usuario.Direccion.Colonia.Municipio.Nombre,
+                        @usuario.Direccion.Colonia.Municipio.Estado.Nombre,
+                        @usuario.Direccion.Colonia.Municipio.Estado.Pais.Nombre
+                    </td>
+                    @if (usuario.Status)
+                    {
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked onchange="ChangeStatus(@usuario.IdUsuario, this)">
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="ChangeStatus(@usuario.IdUsuario, this)">
+                            </div>
+                        </td>
+                    }
+
+                    <td><a class="btn btn-danger" href="@Url.Action("Delete","MostrarUsuarios", new { IdUsuario = usuario.IdUsuario })" onclick=" return confirm('¿Estas seguro que deseas eliminar esta registro?')"><i class="fa-solid fa-trash" style="color: #fffff;"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Scripts.Render("~/bundles/jquery")
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+    @Scripts.Render("~/bundles/jquery")
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+    let table = new DataTable('#myTable', {
+        reponsive: true,
+        "lengthMenu": [[5, 10, 15, 20, -1], [5, 10, 15, 20, "Todos"]],
+        searching: false,
+        language: {
+            url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+        },
+    });
+
+    /*toggle*/
+
+    function ChangeStatus(idUsuario, e) {
+        var status = e.checked
+
+        $.ajax({
+            url: '@Url.Action("ChangeStatus")',
+            data: { IdUsuario: idUsuario, Status : status },
+            type: 'POST',
+            dataType : 'json',
+            success: { },
+            error: {
+                //alert('Ocurrio un error')
+            }
+
+        })
+
+
+    }
+
+    </script>
